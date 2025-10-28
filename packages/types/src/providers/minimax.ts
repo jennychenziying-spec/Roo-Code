@@ -8,7 +8,7 @@ export const minimaxDefaultModelId: MinimaxModelId = "MiniMax-M2"
 
 export const minimaxModels = {
 	"MiniMax-M2": {
-		maxTokens: 128_000,
+		maxTokens: 16384,
 		contextWindow: 192_000,
 		supportsImages: false,
 		supportsPromptCache: false,
@@ -20,3 +20,4 @@ export const minimaxModels = {
 } as const satisfies Record<string, ModelInfo>
 
 export const MINIMAX_DEFAULT_TEMPERATURE = 1.0
+export const MINIMAX_DEFAULT_MAX_TOKENS = 16384

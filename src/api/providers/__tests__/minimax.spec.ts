@@ -35,7 +35,7 @@ describe("MiniMaxHandler", () => {
 		beforeEach(() => {
 			handler = new MiniMaxHandler({
 				minimaxApiKey: "test-minimax-api-key",
-				minimaxBaseUrl: "https://api.minimax.io/v1",
+				minimaxBaseUrl: "https://api.minimax.io",
 			})
 		})
 
@@ -43,7 +43,7 @@ describe("MiniMaxHandler", () => {
 			new MiniMaxHandler({ minimaxApiKey: "test-minimax-api-key" })
 			expect(OpenAI).toHaveBeenCalledWith(
 				expect.objectContaining({
-					baseURL: "https://api.minimax.io/v1",
+					baseURL: "https://api.minimax.io",
 				}),
 			)
 		})
@@ -90,21 +90,21 @@ describe("MiniMaxHandler", () => {
 		beforeEach(() => {
 			handler = new MiniMaxHandler({
 				minimaxApiKey: "test-minimax-api-key",
-				minimaxBaseUrl: "https://api.minimaxi.com/v1",
+				minimaxBaseUrl: "https://api.minimaxi.com",
 			})
 		})
 
 		it("should use the correct China MiniMax base URL", () => {
 			new MiniMaxHandler({
 				minimaxApiKey: "test-minimax-api-key",
-				minimaxBaseUrl: "https://api.minimaxi.com/v1",
+				minimaxBaseUrl: "https://api.minimaxi.com",
 			})
-			expect(OpenAI).toHaveBeenCalledWith(expect.objectContaining({ baseURL: "https://api.minimaxi.com/v1" }))
+			expect(OpenAI).toHaveBeenCalledWith(expect.objectContaining({ baseURL: "https://api.minimaxi.com" }))
 		})
 
 		it("should use the provided API key for China", () => {
 			const minimaxApiKey = "test-minimax-api-key"
-			new MiniMaxHandler({ minimaxApiKey, minimaxBaseUrl: "https://api.minimaxi.com/v1" })
+			new MiniMaxHandler({ minimaxApiKey, minimaxBaseUrl: "https://api.minimaxi.com" })
 			expect(OpenAI).toHaveBeenCalledWith(expect.objectContaining({ apiKey: minimaxApiKey }))
 		})
 
@@ -120,7 +120,7 @@ describe("MiniMaxHandler", () => {
 			const handlerDefault = new MiniMaxHandler({ minimaxApiKey: "test-minimax-api-key" })
 			expect(OpenAI).toHaveBeenCalledWith(
 				expect.objectContaining({
-					baseURL: "https://api.minimax.io/v1",
+					baseURL: "https://api.minimax.io",
 				}),
 			)
 
