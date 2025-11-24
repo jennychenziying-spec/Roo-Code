@@ -83,6 +83,10 @@ import { TerminalRegistry } from "../../integrations/terminal/TerminalRegistry"
 // utils
 import { calculateApiCostAnthropic, calculateApiCostOpenAI } from "../../shared/cost"
 import { getWorkspacePath } from "../../utils/path"
+import {
+	isMergeEnvironmentDetailsMergeNeeded,
+	mergeEnvironmentDetailsIntoUserContent,
+} from "../../utils/mergeEnvironmentDetails"
 
 // prompts
 import { formatResponse } from "../prompts/responses"
@@ -2143,8 +2147,10 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 
 			// Add environment details as its own text block, separate from tool
 			// results.
-			const finalUserContent = [...contentWithoutEnvDetails, { type: "text" as const, text: environmentDetails }]
-
+			let finalUserContent = [...contentWithoutEnvDetails, { type: "text" as const, text: environmentDetails }]
+			if (isMergeEnvironmentDetailsMergeNeeded(modelId)) {
+				finalUserContent = mergeEnvironmentDetailsIntoUserContent(contentWithoutEnvDetails, environmentDetails)
+			}
 			// Only add user message to conversation history if:
 			// 1. This is the first attempt (retryAttempt === 0), OR
 			// 2. The message was removed in a previous iteration (userMessageWasRemoved === true)
