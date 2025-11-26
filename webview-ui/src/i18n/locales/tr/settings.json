@@ -35,6 +35,26 @@
 		"language": "Dil",
 		"about": "Roo Code Hakkında"
 	},
+	"about": {
+		"bugReport": {
+			"label": "Bir hata mı buldunuz?",
+			"link": "GitHub'da bildirin"
+		},
+		"featureRequest": {
+			"label": "Bir fikriniz mi var?",
+			"link": "Bizimle paylaşın"
+		},
+		"securityIssue": {
+			"label": "Bir güvenlik açığı mı keşfettiniz?",
+			"link": "Açıklama sürecimizi takip edin"
+		},
+		"contact": {
+			"label": "Bizimle konuşmanız mı gerekiyor? Yazın"
+		},
+		"community": "İpuçları mı istiyorsunuz yoksa sadece diğer Roo Code kullanıcılarıyla takılmak mı istiyorsunuz? <redditLink>reddit.com/r/RooCode</redditLink> veya <discordLink>discord.gg/roocode</discordLink>'a katılın",
+		"contactAndCommunity": "İletişim ve Topluluk",
+		"manageSettings": "Ayarları Yönet"
+	},
 	"slashCommands": {
 		"description": "Özel iş akışlarını ve eylemleri hızlı bir şekilde yürütmek için eğik çizgi komutlarınızı yönetin. <DocsLink>Daha fazla bilgi edinin</DocsLink>"
 	},
@@ -773,6 +793,8 @@
 			"description": "Etkinleştirildiğinde, new_task aracı bir todos parametresi sağlanmasını gerektirir. Bu, tüm yeni görevlerin net bir hedef listesiyle başlamasını sağlar. Devre dışı bırakıldığında (varsayılan), todos parametresi geriye dönük uyumluluk için isteğe bağlı kalır."
 		},
 		"IMAGE_GENERATION": {
+			"providerLabel": "Sağlayıcı",
+			"providerDescription": "Görüntü oluşturma için kullanılacak sağlayıcıyı seçin.",
 			"name": "AI görüntü üretimini etkinleştir",
 			"description": "Etkinleştirildiğinde, Roo OpenRouter'ın görüntü üretim modellerini kullanarak metin istemlerinden görüntüler üretebilir. Yapılandırılmış bir OpenRouter API anahtarı gerektirir.",
 			"openRouterApiKeyLabel": "OpenRouter API Anahtarı",
@@ -786,6 +808,10 @@
 		"RUN_SLASH_COMMAND": {
 			"name": "Model tarafından başlatılan slash komutlarını etkinleştir",
 			"description": "Etkinleştirildiğinde, Roo iş akışlarını yürütmek için slash komutlarınızı çalıştırabilir."
+		},
+		"MULTIPLE_NATIVE_TOOL_CALLS": {
+			"name": "Paralel araç çağrıları",
+			"description": "Etkinleştirildiğinde, yerel protokol tek bir asistan mesaj turunda birden fazla araç yürütebilir."
 		}
 	},
 	"promptCaching": {

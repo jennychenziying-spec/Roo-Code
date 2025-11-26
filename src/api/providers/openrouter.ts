@@ -28,33 +28,7 @@ import { DEFAULT_HEADERS } from "./constants"
 import { BaseProvider } from "./base-provider"
 import type { ApiHandlerCreateMessageMetadata, SingleCompletionHandler } from "../index"
 import { handleOpenAIError } from "./utils/openai-error-handler"
-
-// Image generation types
-interface ImageGenerationResponse {
-	choices?: Array<{
-		message?: {
-			content?: string
-			images?: Array<{
-				type?: string
-				image_url?: {
-					url?: string
-				}
-			}>
-		}
-	}>
-	error?: {
-		message?: string
-		type?: string
-		code?: string
-	}
-}
-
-export interface ImageGenerationResult {
-	success: boolean
-	imageData?: string
-	imageFormat?: string
-	error?: string
-}
+import { generateImageWithProvider, ImageGenerationResult } from "./utils/image-generation"
 
 // Add custom interface for OpenRouter params.
 type OpenRouterChatCompletionParams = OpenAI.Chat.ChatCompletionCreateParams & {
@@ -233,7 +207,6 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 						allow_fallbacks: false,
 					},
 				}),
-			parallel_tool_calls: false, // Ensure only one tool call at a time
 			...(transforms && { transforms }),
 			...(reasoning && { reasoning }),
 			...(metadata?.tools && { tools: metadata.tools }),
@@ -248,7 +221,6 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 		}
 
 		let lastUsage: CompletionUsage | undefined = undefined
-		const toolCallAccumulator = new Map<number, { id: string; name: string; arguments: string }>()
 		// Accumulator for reasoning_details: accumulate text by type-index key
 		const reasoningDetailsAccumulator = new Map<
 			string,
@@ -346,24 +318,15 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 					yield { type: "reasoning", text: delta.reasoning }
 				}
 
-				// Check for tool calls in delta
+				// Emit raw tool call chunks - NativeToolCallParser handles state management
 				if ("tool_calls" in delta && Array.isArray(delta.tool_calls)) {
 					for (const toolCall of delta.tool_calls) {
-						const index = toolCall.index
-						const existing = toolCallAccumulator.get(index)
-
-						if (existing) {
-							// Accumulate arguments for existing tool call
-							if (toolCall.function?.arguments) {
-								existing.arguments += toolCall.function.arguments
-							}
-						} else {
-							// Start new tool call accumulation
-							toolCallAccumulator.set(index, {
-								id: toolCall.id || "",
-								name: toolCall.function?.name || "",
-								arguments: toolCall.function?.arguments || "",
-							})
+						yield {
+							type: "tool_call_partial",
+							index: toolCall.index,
+							id: toolCall.id,
+							name: toolCall.function?.name,
+							arguments: toolCall.function?.arguments,
 						}
 					}
 				}
@@ -373,37 +336,9 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 				}
 			}
 
-			// When finish_reason is 'tool_calls', yield all accumulated tool calls
-			if (finishReason === "tool_calls" && toolCallAccumulator.size > 0) {
-				for (const toolCall of toolCallAccumulator.values()) {
-					yield {
-						type: "tool_call",
-						id: toolCall.id,
-						name: toolCall.name,
-						arguments: toolCall.arguments,
-					}
-				}
-				// Clear accumulator after yielding
-				toolCallAccumulator.clear()
-			}
-
 			if (chunk.usage) {
 				lastUsage = chunk.usage
 			}
-		}
-
-		// Fallback: If stream ends with accumulated tool calls that weren't yielded
-		// (e.g., finish_reason was 'stop' or 'length' instead of 'tool_calls')
-		if (toolCallAccumulator.size > 0) {
-			for (const toolCall of toolCallAccumulator.values()) {
-				yield {
-					type: "tool_call",
-					id: toolCall.id,
-					name: toolCall.name,
-					arguments: toolCall.arguments,
-				}
-			}
-			toolCallAccumulator.clear()
 		}
 
 		// After streaming completes, store the accumulated reasoning_details
@@ -499,7 +434,8 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 	}
 
 	/**
-	 * Generate an image using OpenRouter's image generation API
+	 * Generate an image using OpenRouter's image generation API (chat completions with modalities)
+	 * Note: OpenRouter only supports the chat completions approach, not the /images/generations endpoint
 	 * @param prompt The text prompt for image generation
 	 * @param model The model to use for generation
 	 * @param apiKey The OpenRouter API key (must be explicitly provided)
@@ -519,103 +455,15 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			}
 		}
 
-		try {
-			const baseURL = this.options.openRouterBaseUrl || "https://openrouter.ai/api/v1"
-			const response = await fetch(`${baseURL}/chat/completions`, {
-				method: "POST",
-				headers: {
-					Authorization: `Bearer ${apiKey}`,
-					"Content-Type": "application/json",
-					"HTTP-Referer": "https://github.com/RooVetGit/Roo-Code",
-					"X-Title": "Roo Code",
-				},
-				body: JSON.stringify({
-					model,
-					messages: [
-						{
-							role: "user",
-							content: inputImage
-								? [
-										{
-											type: "text",
-											text: prompt,
-										},
-										{
-											type: "image_url",
-											image_url: {
-												url: inputImage,
-											},
-										},
-									]
-								: prompt,
-						},
-					],
-					modalities: ["image", "text"],
-				}),
-			})
+		const baseURL = this.options.openRouterBaseUrl || "https://openrouter.ai/api/v1"
 
-			if (!response.ok) {
-				const errorText = await response.text()
-				let errorMessage = `Failed to generate image: ${response.status} ${response.statusText}`
-				try {
-					const errorJson = JSON.parse(errorText)
-					if (errorJson.error?.message) {
-						errorMessage = `Failed to generate image: ${errorJson.error.message}`
-					}
-				} catch {
-					// Use default error message
-				}
-				return {
-					success: false,
-					error: errorMessage,
-				}
-			}
-
-			const result: ImageGenerationResponse = await response.json()
-
-			if (result.error) {
-				return {
-					success: false,
-					error: `Failed to generate image: ${result.error.message}`,
-				}
-			}
-
-			// Extract the generated image from the response
-			const images = result.choices?.[0]?.message?.images
-			if (!images || images.length === 0) {
-				return {
-					success: false,
-					error: "No image was generated in the response",
-				}
-			}
-
-			const imageData = images[0]?.image_url?.url
-			if (!imageData) {
-				return {
-					success: false,
-					error: "Invalid image data in response",
-				}
-			}
-
-			// Extract base64 data from data URL
-			const base64Match = imageData.match(/^data:image\/(png|jpeg|jpg);base64,(.+)$/)
-			if (!base64Match) {
-				return {
-					success: false,
-					error: "Invalid image format received",
-				}
-			}
-
-			return {
-				success: true,
-				imageData: imageData,
-				imageFormat: base64Match[1],
-			}
-		} catch (error) {
-			return {
-				success: false,
-				error: error instanceof Error ? error.message : "Unknown error occurred",
-			}
-		}
+		// OpenRouter only supports chat completions approach for image generation
+		return generateImageWithProvider({
+			baseURL,
+			authToken: apiKey,
+			model,
+			prompt,
+			inputImage,
+		})
 	}
 }

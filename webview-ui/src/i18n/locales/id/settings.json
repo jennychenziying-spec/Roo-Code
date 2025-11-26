@@ -35,6 +35,26 @@
 		"language": "Bahasa",
 		"about": "Tentang Roo Code"
 	},
+	"about": {
+		"bugReport": {
+			"label": "Menemukan bug?",
+			"link": "Laporkan di GitHub"
+		},
+		"featureRequest": {
+			"label": "Punya ide?",
+			"link": "Bagikan dengan kami"
+		},
+		"securityIssue": {
+			"label": "Menemukan kerentanan?",
+			"link": "Ikuti proses pengungkapan kami"
+		},
+		"contact": {
+			"label": "Perlu bicara dengan kami? Tulis"
+		},
+		"community": "Ingin tips atau hanya nongkrong dengan pengguna Roo Code lainnya? Bergabunglah dengan <redditLink>reddit.com/r/RooCode</redditLink> atau <discordLink>discord.gg/roocode</discordLink>",
+		"contactAndCommunity": "Kontak & Komunitas",
+		"manageSettings": "Kelola Pengaturan"
+	},
 	"slashCommands": {
 		"description": "Kelola perintah slash kamu untuk mengeksekusi alur kerja dan tindakan kustom dengan cepat. <DocsLink>Pelajari lebih lanjut</DocsLink>"
 	},
@@ -803,7 +823,9 @@
 		},
 		"IMAGE_GENERATION": {
 			"name": "Aktifkan pembuatan gambar AI",
-			"description": "Ketika diaktifkan, Roo dapat menghasilkan gambar dari prompt teks menggunakan model pembuatan gambar OpenRouter. Memerlukan kunci API OpenRouter yang dikonfigurasi.",
+			"description": "Ketika diaktifkan, Roo dapat menghasilkan gambar dari prompt teks menggunakan model pembuatan gambar.",
+			"providerLabel": "Penyedia",
+			"providerDescription": "Pilih penyedia untuk menghasilkan gambar.",
 			"openRouterApiKeyLabel": "Kunci API OpenRouter",
 			"openRouterApiKeyPlaceholder": "Masukkan kunci API OpenRouter Anda",
 			"getApiKeyText": "Dapatkan kunci API Anda dari",
@@ -815,6 +837,10 @@
 		"RUN_SLASH_COMMAND": {
 			"name": "Aktifkan perintah slash yang dimulai model",
 			"description": "Ketika diaktifkan, Roo dapat menjalankan perintah slash Anda untuk mengeksekusi alur kerja."
+		},
+		"MULTIPLE_NATIVE_TOOL_CALLS": {
+			"name": "Panggilan tool paralel",
+			"description": "Ketika diaktifkan, protokol native dapat mengeksekusi beberapa tool dalam satu giliran pesan asisten."
 		}
 	},
 	"promptCaching": {
