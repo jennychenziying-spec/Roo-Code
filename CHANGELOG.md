@@ -1,5 +1,41 @@
 # Roo Code Changelog
 
+## [3.34.8] - 2025-11-27
+
+![3.34.8 Release - Race Condition Fix](/releases/3.34.8-release.png)
+
+- Fix: Race condition in new_task tool for native protocol (PR #9655 by @daniel-lxs)
+
+## [3.34.7] - 2025-11-27
+
+![3.34.7 Release - More Native Tool Integrations](/releases/3.34.7-release.png)
+
+- Support native tools in the Anthropic provider for improved tool calling (PR #9644 by @mrubens)
+- Enable native tool calling for z.ai models (PR #9645 by @mrubens)
+- Enable native tool calling for Moonshot models (PR #9646 by @mrubens)
+- Fix: OpenRouter tool calls handling improvements (PR #9642 by @mrubens)
+- Fix: OpenRouter GPT-5 strict schema validation for read_file tool (PR #9633 by @daniel-lxs)
+- Fix: Create parent directories early in write_to_file to prevent ENOENT errors (#9634 by @ivanenev, PR #9640 by @daniel-lxs)
+- Fix: Disable native tools and temperature support for claude-code provider (PR #9643 by @hannesrudolph)
+- Add 'taking you to cloud' screen after provider welcome for improved onboarding (PR #9652 by @mrubens)
+
+## [3.34.6] - 2025-11-26
+
+![3.34.6 Release - Bedrock Embeddings](/releases/3.34.6-release.png)
+
+- Add support for AWS Bedrock embeddings in code indexing (#8658 by @kyle-hobbs, PR #9475 by @ggoranov-smar)
+- Add native tool calling support for Mistral provider (PR #9625 by @hannesrudolph)
+- Wire MULTIPLE_NATIVE_TOOL_CALLS experiment to OpenAI parallel_tool_calls for parallel tool execution (PR #9621 by @hannesrudolph)
+- Add fine grained tool streaming for OpenRouter Anthropic (PR #9629 by @mrubens)
+- Allow global inference selection for Bedrock when cross-region is enabled (PR #9616 by @roomote)
+- Fix: Filter non-Anthropic content blocks before sending to Vertex API (#9583 by @cardil, PR #9618 by @hannesrudolph)
+- Fix: Restore content undefined check in WriteToFileTool.handlePartial() (#9611 by @Lissanro, PR #9614 by @daniel-lxs)
+- Fix: Prevent model cache from persisting empty API responses (#9597 by @zx2021210538, PR #9623 by @daniel-lxs)
+- Fix: Exclude access_mcp_resource tool when MCP has no resources (PR #9615 by @daniel-lxs)
+- Fix: Update default settings for inline terminal and codebase indexing (PR #9622 by @roomote)
+- Fix: Convert line_ranges strings to lineRanges objects in native tool calls (PR #9627 by @daniel-lxs)
+- Fix: Defer new_task tool_result until subtask completes for native protocol (PR #9628 by @daniel-lxs)
+
 ## [3.34.5] - 2025-11-25
 
 ![3.34.5 Release - Experimental Parallel Tool Calling](/releases/3.34.5-release.png)
