@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { VSCodeTextField, VSCodeDropdown, VSCodeOption } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 
 import type { ProviderSettings } from "@roo-code/types"
 
@@ -7,7 +7,6 @@ import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { VSCodeButtonLink } from "@src/components/common/VSCodeButtonLink"
 
 import { inputEventTransform } from "../transforms"
-import { cn } from "@/lib/utils"
 
 type MiniMaxProps = {
 	apiConfiguration: ProviderSettings
@@ -31,18 +30,13 @@ export const MiniMax = ({ apiConfiguration, setApiConfigurationField }: MiniMaxP
 	return (
 		<>
 			<div>
-				<label className="block font-medium mb-1">{t("settings:providers.minimaxBaseUrl")}</label>
-				<VSCodeDropdown
-					value={apiConfiguration.minimaxBaseUrl}
-					onChange={handleInputChange("minimaxBaseUrl")}
-					className={cn("w-full")}>
-					<VSCodeOption value="https://api.minimax.io/v1" className="p-2">
-						api.minimax.io
-					</VSCodeOption>
-					<VSCodeOption value="https://api.minimaxi.com/v1" className="p-2">
-						api.minimaxi.com
-					</VSCodeOption>
-				</VSCodeDropdown>
+				<VSCodeTextField
+					value={apiConfiguration?.minimaxBaseUrl || ""}
+					onInput={handleInputChange("minimaxBaseUrl")}
+					placeholder="https://api.minimax.io/v1"
+					className="w-full">
+					<label className="block font-medium mb-1">{t("settings:providers.minimaxBaseUrl")}</label>
+				</VSCodeTextField>
 			</div>
 			<div>
 				<VSCodeTextField

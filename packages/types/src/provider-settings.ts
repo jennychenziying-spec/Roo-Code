@@ -335,9 +335,7 @@ const moonshotSchema = apiModelIdProviderModelSchema.extend({
 })
 
 const minimaxSchema = apiModelIdProviderModelSchema.extend({
-	minimaxBaseUrl: z
-		.union([z.literal("https://api.minimax.io/v1"), z.literal("https://api.minimaxi.com/v1")])
-		.optional(),
+	minimaxBaseUrl: z.string().optional(),
 	minimaxApiKey: z.string().optional(),
 })
 
