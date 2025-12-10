@@ -40,6 +40,18 @@ export const MiniMax = ({ apiConfiguration, setApiConfigurationField }: MiniMaxP
 			</div>
 			<div>
 				<VSCodeTextField
+					value={apiConfiguration?.apiModelId || ""}
+					onInput={handleInputChange("apiModelId")}
+					placeholder="abab6.5s-chat"
+					className="w-full">
+					<label className="block font-medium mb-1">{t("settings:providers.model")}</label>
+				</VSCodeTextField>
+				<div className="text-sm text-vscode-descriptionForeground">
+					{t("settings:providers.customModelIdNotice")}
+				</div>
+			</div>
+			<div>
+				<VSCodeTextField
 					value={apiConfiguration?.minimaxApiKey || ""}
 					type="password"
 					onInput={handleInputChange("minimaxApiKey")}

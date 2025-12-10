@@ -3,7 +3,7 @@ import { Stream as AnthropicStream } from "@anthropic-ai/sdk/streaming"
 import { CacheControlEphemeral } from "@anthropic-ai/sdk/resources"
 import OpenAI from "openai"
 
-import { type MinimaxModelId, minimaxDefaultModelId, minimaxModels } from "@roo-code/types"
+import { type MinimaxModelId, minimaxDefaultModelId, minimaxDefaultModelInfo, minimaxModels } from "@roo-code/types"
 
 import type { ApiHandlerOptions } from "../../shared/api"
 
@@ -270,9 +270,12 @@ export class MiniMaxHandler extends BaseProvider implements SingleCompletionHand
 	}
 
 	getModel() {
-		const modelId = this.options.apiModelId
-		const id = modelId && modelId in minimaxModels ? (modelId as MinimaxModelId) : minimaxDefaultModelId
-		const info = minimaxModels[id]
+		// Use user-provided modelId, or fall back to default
+		const id = this.options.apiModelId || minimaxDefaultModelId
+
+		// If the modelId exists in our known models, use its info; otherwise use default model info
+		// This allows users to input custom model IDs while still providing reasonable defaults
+		const info = id in minimaxModels ? minimaxModels[id as MinimaxModelId] : minimaxDefaultModelInfo
 
 		const params = getModelParams({
 			format: "anthropic",
