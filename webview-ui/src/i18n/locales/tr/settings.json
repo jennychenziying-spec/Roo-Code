@@ -22,6 +22,8 @@
 	},
 	"sections": {
 		"providers": "Sağlayıcılar",
+		"modes": "Modlar",
+		"mcp": "MCP Sunucuları",
 		"autoApprove": "Oto-Onay",
 		"browser": "Bilgisayar Erişimi",
 		"checkpoints": "Kontrol Noktaları",
@@ -87,6 +89,8 @@
 		"openRouterProvider": "OpenRouter",
 		"openRouterApiKeyLabel": "OpenRouter API Anahtarı",
 		"openRouterApiKeyPlaceholder": "OpenRouter API anahtarınızı girin",
+		"openRouterProviderRoutingLabel": "OpenRouter Sağlayıcı Yönlendirmesi",
+		"openRouterProviderRoutingDescription": "OpenRouter, gömme modeliniz için mevcut en iyi sağlayıcılara istekleri yönlendirir. Varsayılan olarak, istekler çalışma süresini en üst düzeye çıkarmak için en iyi sağlayıcılar arasında dengelenir. Ancak, bu model için kullanılacak belirli bir sağlayıcı seçebilirsiniz.",
 		"openaiCompatibleProvider": "OpenAI Uyumlu",
 		"openAiKeyLabel": "OpenAI API Anahtarı",
 		"openAiKeyPlaceholder": "OpenAI API anahtarınızı girin",
@@ -279,8 +283,6 @@
 		"vercelAiGatewayApiKey": "Vercel AI Gateway API Anahtarı",
 		"getVercelAiGatewayApiKey": "Vercel AI Gateway API Anahtarı Al",
 		"apiKeyStorageNotice": "API anahtarları VSCode'un Gizli Depolamasında güvenli bir şekilde saklanır",
-		"glamaApiKey": "Glama API Anahtarı",
-		"getGlamaApiKey": "Glama API Anahtarı Al",
 		"useCustomBaseUrl": "Özel temel URL kullan",
 		"useReasoning": "Akıl yürütmeyi etkinleştir",
 		"useHostHeader": "Özel Host başlığı kullan",
@@ -502,6 +504,7 @@
 			"none": "Yok",
 			"minimal": "Minimal (en hızlı)",
 			"high": "Yüksek",
+			"xhigh": "Çok yüksek",
 			"medium": "Orta",
 			"low": "Düşük"
 		},
@@ -859,7 +862,8 @@
 		"label": "Model",
 		"searchPlaceholder": "Ara",
 		"noMatchFound": "Eşleşme bulunamadı",
-		"useCustomModel": "Özel kullan: {{modelId}}"
+		"useCustomModel": "Özel kullan: {{modelId}}",
+		"simplifiedExplanation": "Ayrıntılı model ayarlarını daha sonra ayarlayabilirsiniz."
 	},
 	"footer": {
 		"feedback": "Herhangi bir sorunuz veya geri bildiriminiz varsa, <githubLink>github.com/RooCodeInc/Roo-Code</githubLink> adresinde bir konu açmaktan veya <redditLink>reddit.com/r/RooCode</redditLink> ya da <discordLink>discord.gg/roocode</discordLink>'a katılmaktan çekinmeyin",
@@ -951,6 +955,10 @@
 		"collapseThinking": {
 			"label": "Düşünme mesajlarını varsayılan olarak daralt",
 			"description": "Etkinleştirildiğinde, düşünme blokları siz onlarla etkileşime girene kadar varsayılan olarak daraltılır"
+		},
+		"requireCtrlEnterToSend": {
+			"label": "Mesaj göndermek için {{primaryMod}}+Enter gerekli",
+			"description": "Etkinleştirildiğinde, sadece Enter yerine mesaj göndermek için {{primaryMod}}+Enter'a basmalısınız"
 		}
 	}
 }

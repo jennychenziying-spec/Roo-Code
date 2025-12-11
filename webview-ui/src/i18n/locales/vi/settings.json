@@ -22,6 +22,8 @@
 	},
 	"sections": {
 		"providers": "Nhà cung cấp",
+		"modes": "Chế độ",
+		"mcp": "Máy chủ MCP",
 		"autoApprove": "Phê duyệt",
 		"browser": "Trình duyệt",
 		"checkpoints": "Điểm kiểm tra",
@@ -87,6 +89,8 @@
 		"openRouterProvider": "OpenRouter",
 		"openRouterApiKeyLabel": "Khóa API OpenRouter",
 		"openRouterApiKeyPlaceholder": "Nhập khóa API OpenRouter của bạn",
+		"openRouterProviderRoutingLabel": "Định tuyến nhà cung cấp OpenRouter",
+		"openRouterProviderRoutingDescription": "OpenRouter chuyển hướng yêu cầu đến các nhà cung cấp tốt nhất hiện có cho mô hình nhúng của bạn. Theo mặc định, các yêu cầu được cân bằng giữa các nhà cung cấp hàng đầu để tối đa hóa thời gian hoạt động. Tuy nhiên, bạn có thể chọn một nhà cung cấp cụ thể để sử dụng cho mô hình này.",
 		"openaiCompatibleProvider": "Tương thích OpenAI",
 		"openAiKeyLabel": "Khóa API OpenAI",
 		"openAiKeyPlaceholder": "Nhập khóa API OpenAI của bạn",
@@ -279,8 +283,6 @@
 		"vercelAiGatewayApiKey": "Khóa API Vercel AI Gateway",
 		"getVercelAiGatewayApiKey": "Lấy khóa API Vercel AI Gateway",
 		"apiKeyStorageNotice": "Khóa API được lưu trữ an toàn trong Bộ lưu trữ bí mật của VSCode",
-		"glamaApiKey": "Khóa API Glama",
-		"getGlamaApiKey": "Lấy khóa API Glama",
 		"useCustomBaseUrl": "Sử dụng URL cơ sở tùy chỉnh",
 		"useReasoning": "Bật lý luận",
 		"useHostHeader": "Sử dụng tiêu đề Host tùy chỉnh",
@@ -502,6 +504,7 @@
 			"none": "Không",
 			"minimal": "Tối thiểu (nhanh nhất)",
 			"high": "Cao",
+			"xhigh": "Rất cao",
 			"medium": "Trung bình",
 			"low": "Thấp"
 		},
@@ -859,7 +862,8 @@
 		"label": "Mô hình",
 		"searchPlaceholder": "Tìm kiếm",
 		"noMatchFound": "Không tìm thấy kết quả",
-		"useCustomModel": "Sử dụng tùy chỉnh: {{modelId}}"
+		"useCustomModel": "Sử dụng tùy chỉnh: {{modelId}}",
+		"simplifiedExplanation": "Bạn có thể điều chỉnh cài đặt mô hình chi tiết sau."
 	},
 	"footer": {
 		"feedback": "Nếu bạn có bất kỳ câu hỏi hoặc phản hồi nào, vui lòng mở một vấn đề tại <githubLink>github.com/RooCodeInc/Roo-Code</githubLink> hoặc tham gia <redditLink>reddit.com/r/RooCode</redditLink> hoặc <discordLink>discord.gg/roocode</discordLink>",
@@ -951,6 +955,10 @@
 		"collapseThinking": {
 			"label": "Thu gọn tin nhắn Suy nghĩ theo mặc định",
 			"description": "Khi được bật, các khối suy nghĩ sẽ được thu gọn theo mặc định cho đến khi bạn tương tác với chúng"
+		},
+		"requireCtrlEnterToSend": {
+			"label": "Yêu cầu {{primaryMod}}+Enter để gửi tin nhắn",
+			"description": "Khi được bật, bạn phải nhấn {{primaryMod}}+Enter để gửi tin nhắn thay vì chỉ nhấn Enter"
 		}
 	}
 }

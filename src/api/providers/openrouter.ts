@@ -7,7 +7,11 @@ import {
 	OPENROUTER_DEFAULT_PROVIDER_NAME,
 	OPEN_ROUTER_PROMPT_CACHING_MODELS,
 	DEEP_SEEK_DEFAULT_TEMPERATURE,
+	ApiProviderError,
 } from "@roo-code/types"
+import { TelemetryService } from "@roo-code/telemetry"
+
+import { NativeToolCallParser } from "../../core/assistant-message/NativeToolCallParser"
 
 import type { ApiHandlerOptions, ModelRecord } from "../../shared/api"
 
@@ -222,6 +226,15 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 		try {
 			stream = await this.client.chat.completions.create(completionParams, requestOptions)
 		} catch (error) {
+			TelemetryService.instance.captureException(
+				new ApiProviderError(
+					error instanceof Error ? error.message : String(error),
+					this.providerName,
+					modelId,
+					"createMessage",
+				),
+			)
+
 			throw handleOpenAIError(error, this.providerName)
 		}
 
@@ -246,6 +259,20 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			if ("error" in chunk) {
 				const error = chunk.error as { message?: string; code?: number }
 				console.error(`OpenRouter API Error: ${error?.code} - ${error?.message}`)
+
+				TelemetryService.instance.captureException(
+					Object.assign(
+						new ApiProviderError(
+							error?.message ?? "Unknown error",
+							this.providerName,
+							modelId,
+							"createMessage",
+							error?.code,
+						),
+						{ status: error?.code },
+					),
+				)
+
 				throw new Error(`OpenRouter API Error ${error?.code}: ${error?.message}`)
 			}
 
@@ -341,6 +368,15 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 				}
 			}
 
+			// Process finish_reason to emit tool_call_end events
+			// This ensures tool calls are finalized even if the stream doesn't properly close
+			if (finishReason) {
+				const endEvents = NativeToolCallParser.processFinishReason(finishReason)
+				for (const event of endEvents) {
+					yield event
+				}
+			}
+
 			if (chunk.usage) {
 				lastUsage = chunk.usage
 			}
@@ -428,14 +464,39 @@ export class OpenRouterHandler extends BaseProvider implements SingleCompletionH
 			: undefined
 
 		let response
+
 		try {
 			response = await this.client.chat.completions.create(completionParams, requestOptions)
 		} catch (error) {
+			TelemetryService.instance.captureException(
+				new ApiProviderError(
+					error instanceof Error ? error.message : String(error),
+					this.providerName,
+					modelId,
+					"completePrompt",
+				),
+			)
+
 			throw handleOpenAIError(error, this.providerName)
 		}
 
 		if ("error" in response) {
 			const error = response.error as { message?: string; code?: number }
+			console.error(`OpenRouter API Error: ${error?.code} - ${error?.message}`)
+
+			TelemetryService.instance.captureException(
+				Object.assign(
+					new ApiProviderError(
+						error?.message ?? "Unknown error",
+						this.providerName,
+						modelId,
+						"completePrompt",
+						error?.code,
+					),
+					{ status: error?.code },
+				),
+			)
+
 			throw new Error(`OpenRouter API Error ${error?.code}: ${error?.message}`)
 		}
 

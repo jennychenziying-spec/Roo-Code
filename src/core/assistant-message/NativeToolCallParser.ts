@@ -156,7 +156,6 @@ export class NativeToolCallParser {
 					id: tracked.id,
 				})
 			}
-			this.rawChunkTracker.clear()
 		}
 
 		return events
@@ -371,39 +370,11 @@ export class NativeToolCallParser {
 				}
 				break
 
-			case "insert_content":
-				// For partial tool calls, we build nativeArgs incrementally as fields arrive.
-				// Unlike parseToolCall which validates all required fields, partial parsing
-				// needs to show progress as each field streams in.
-				if (
-					partialArgs.path !== undefined ||
-					partialArgs.line !== undefined ||
-					partialArgs.content !== undefined
-				) {
-					nativeArgs = {
-						path: partialArgs.path,
-						line:
-							typeof partialArgs.line === "number"
-								? partialArgs.line
-								: partialArgs.line !== undefined
-									? parseInt(String(partialArgs.line), 10)
-									: undefined,
-						content: partialArgs.content,
-					}
-				}
-				break
-
 			case "write_to_file":
-				if (partialArgs.path || partialArgs.content || partialArgs.line_count !== undefined) {
+				if (partialArgs.path || partialArgs.content) {
 					nativeArgs = {
 						path: partialArgs.path,
 						content: partialArgs.content,
-						line_count:
-							typeof partialArgs.line_count === "number"
-								? partialArgs.line_count
-								: partialArgs.line_count
-									? parseInt(String(partialArgs.line_count), 10)
-									: undefined,
 					}
 				}
 				break
@@ -434,6 +405,7 @@ export class NativeToolCallParser {
 						coordinate: partialArgs.coordinate,
 						size: partialArgs.size,
 						text: partialArgs.text,
+						path: partialArgs.path,
 					}
 				}
 				break
@@ -461,14 +433,6 @@ export class NativeToolCallParser {
 						prompt: partialArgs.prompt,
 						path: partialArgs.path,
 						image: partialArgs.image,
-					}
-				}
-				break
-
-			case "list_code_definition_names":
-				if (partialArgs.path !== undefined) {
-					nativeArgs = {
-						path: partialArgs.path,
 					}
 				}
 				break
@@ -515,6 +479,28 @@ export class NativeToolCallParser {
 						server_name: partialArgs.server_name,
 						tool_name: partialArgs.tool_name,
 						arguments: partialArgs.arguments,
+					}
+				}
+				break
+
+			case "apply_patch":
+				if (partialArgs.patch !== undefined) {
+					nativeArgs = {
+						patch: partialArgs.patch,
+					}
+				}
+				break
+
+			case "search_replace":
+				if (
+					partialArgs.file_path !== undefined ||
+					partialArgs.old_string !== undefined ||
+					partialArgs.new_string !== undefined
+				) {
+					nativeArgs = {
+						file_path: partialArgs.file_path,
+						old_string: partialArgs.old_string,
+						new_string: partialArgs.new_string,
 					}
 				}
 				break
@@ -616,16 +602,6 @@ export class NativeToolCallParser {
 					}
 					break
 
-				case "insert_content":
-					if (args.path !== undefined && args.line !== undefined && args.content !== undefined) {
-						nativeArgs = {
-							path: args.path,
-							line: typeof args.line === "number" ? args.line : parseInt(String(args.line), 10),
-							content: args.content,
-						} as NativeArgsFor<TName>
-					}
-					break
-
 				case "apply_diff":
 					if (args.path !== undefined && args.diff !== undefined) {
 						nativeArgs = {
@@ -661,6 +637,7 @@ export class NativeToolCallParser {
 							coordinate: args.coordinate,
 							size: args.size,
 							text: args.text,
+							path: args.path,
 						} as NativeArgsFor<TName>
 					}
 					break
@@ -688,14 +665,6 @@ export class NativeToolCallParser {
 							prompt: args.prompt,
 							path: args.path,
 							image: args.image,
-						} as NativeArgsFor<TName>
-					}
-					break
-
-				case "list_code_definition_names":
-					if (args.path !== undefined) {
-						nativeArgs = {
-							path: args.path,
 						} as NativeArgsFor<TName>
 					}
 					break
@@ -737,14 +706,10 @@ export class NativeToolCallParser {
 					break
 
 				case "write_to_file":
-					if (args.path !== undefined && args.content !== undefined && args.line_count !== undefined) {
+					if (args.path !== undefined && args.content !== undefined) {
 						nativeArgs = {
 							path: args.path,
 							content: args.content,
-							line_count:
-								typeof args.line_count === "number"
-									? args.line_count
-									: parseInt(String(args.line_count), 10),
 						} as NativeArgsFor<TName>
 					}
 					break
@@ -768,6 +733,28 @@ export class NativeToolCallParser {
 					}
 					break
 
+				case "apply_patch":
+					if (args.patch !== undefined) {
+						nativeArgs = {
+							patch: args.patch,
+						} as NativeArgsFor<TName>
+					}
+					break
+
+				case "search_replace":
+					if (
+						args.file_path !== undefined &&
+						args.old_string !== undefined &&
+						args.new_string !== undefined
+					) {
+						nativeArgs = {
+							file_path: args.file_path,
+							old_string: args.old_string,
+							new_string: args.new_string,
+						} as NativeArgsFor<TName>
+					}
+					break
+
 				default:
 					break
 			}
@@ -782,8 +769,11 @@ export class NativeToolCallParser {
 
 			return result
 		} catch (error) {
-			console.error(`Failed to parse tool call arguments:`, error)
-			console.error(`Error details:`, error instanceof Error ? error.message : String(error))
+			console.error(
+				`Failed to parse tool call arguments: ${error instanceof Error ? error.message : String(error)}`,
+			)
+
+			console.error(`Tool call: ${JSON.stringify(toolCall, null, 2)}`)
 			return null
 		}
 	}
