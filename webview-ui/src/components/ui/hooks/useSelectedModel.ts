@@ -8,6 +8,7 @@ import {
 	deepSeekModels,
 	moonshotModels,
 	minimaxModels,
+	minimaxDefaultModelInfo,
 	geminiModels,
 	mistralModels,
 	openAiModelInfoSaneDefaults,
@@ -248,7 +249,7 @@ function getSelectedModel({
 		}
 		case "minimax": {
 			const id = apiConfiguration.apiModelId ?? defaultModelId
-			const info = minimaxModels[id as keyof typeof minimaxModels]
+			const info = minimaxModels[id as keyof typeof minimaxModels] ?? minimaxDefaultModelInfo
 			return { id, info }
 		}
 		case "zai": {
